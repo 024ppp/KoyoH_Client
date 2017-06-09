@@ -2,7 +2,6 @@ package com.example.administrator.koyoh_client;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.INotificationSideChannel;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
@@ -17,7 +16,7 @@ public class SelectSagyo extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_sagyo);
+        setContentView(R.layout.select_sagyo);
 
         Intent intent = getIntent();
         String names = intent.getStringExtra("name");

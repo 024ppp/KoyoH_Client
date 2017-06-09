@@ -3,8 +3,12 @@ package com.example.administrator.koyoh_client;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
@@ -19,23 +23,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
-    /*
-    //TODO IPを変えれるようにしたい
-    final String ip = "10.1.1.55";
-    //final String ip = "10.30.1.150";
-    final int  myPort = 8888;
-    */
-
-    TextView show;
-    Button btnClear;
-    TextView lblVkon;
-    TextView lblAmime1;
-    EditText txtSagyo;
-    EditText txtVkon;
-    EditText txtAmime1;
-    EditText txtHoge;
-    Button btnUpd;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+    Toolbar toolbar;
+    Button btnClear, btnUpd;
+    TextView lblVkon, lblAmime1, show;
+    EditText txtSagyo, txtVkon, txtAmime1, txtHoge;
     Handler handler;
     // サーバと通信するスレッド
     ClientThread clientThread;
@@ -56,6 +48,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         setContentView(R.layout.activity_main);
 
         // view取得
+        toolbar = (Toolbar) findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
+
         show = (TextView) findViewById(R.id.show);
         btnClear = (Button) findViewById(R.id.btnClear);
 
@@ -81,20 +76,21 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             }
         };
 
-        //IP & Port取得
-        final String ip = getString(R.string.ip);
-        final int myPort = getResources().getInteger(R.integer.myPort);
+        //接続先を取得
+        SharedPreferences prefs = getSharedPreferences("ConnectionData", Context.MODE_PRIVATE);
+        final String ip = prefs.getString("ip", "");
+        final int myPort = prefs.getInt("myPort", 0);
         clientThread = new ClientThread(handler, ip, myPort);
         // サーバ接続スレッド開始
         new Thread(clientThread).start();
 
         this.nfcWriter = new NfcWriter(this);
 
-        findViewById(R.id.btnClear).setOnClickListener(this);
-        findViewById(R.id.txtSagyo).setOnFocusChangeListener(this);
-        findViewById(R.id.txtVkon).setOnFocusChangeListener(this);
-        findViewById(R.id.txtAmime1).setOnFocusChangeListener(this); //???
-        findViewById(R.id.btnUpd).setOnClickListener(this);
+        btnClear.setOnClickListener(this);
+        txtSagyo.setOnFocusChangeListener(this);
+        txtVkon.setOnFocusChangeListener(this);
+        txtAmime1.setOnFocusChangeListener(this); //???
+        btnUpd.setOnClickListener(this);
 
         //タップされてもキーボードを出さなくする
         txtSagyo.setKeyListener(null);
@@ -330,6 +326,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                                     + "\ndata:" + bundle.getString("key.canceledData"));
                 }
                 break;
+            case 8888:
+
+                Toast.makeText(this, "Setting has been completed.", Toast.LENGTH_SHORT).show();
+                break;
 
             default:
                 break;
@@ -372,6 +372,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //設定画面呼び出し
+            Intent intent = new Intent(this, Setting.class);
+            int requestCode = 8888;
+            startActivityForResult(intent, requestCode);
             return true;
         }
         return super.onOptionsItemSelected(item);

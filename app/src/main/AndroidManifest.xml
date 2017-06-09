@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectSagyo"></activity>
+        <activity android:name=".Setting"></activity>
     </application>
 
 </manifest>
