@@ -121,11 +121,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             focusToNextControl();
         }
         else if (cmd.equals(pc.UPD.getString())) {
-            //Toast.makeText(this, "登録完了しました。", Toast.LENGTH_SHORT).show();
             MyToast.makeText(this, "登録完了しました。", Toast.LENGTH_SHORT, 32f).show();
             initPage();
         }
-        //TODO err時の振る舞い
         else if (cmd.equals(pc.ERR.getString())) {
             show.setText("\n "+ excmd);
         }
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sendMsgToServer(sMsg);
             }
         }
-        else if (cmd.equals(pc.AM1.getString())) {
+        else if (cmd.equals(pc.AMI.getString())) {
             if (txtAmime1.isFocused()) {
                 txtAmime1.setText(excmd);
                 focusToNextControl();
@@ -155,15 +153,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //登録ボタン押下時にサーバに送る更新値の生成
     private String createUpdText() {
         String txt = "";
-        /*
-        ●更新値のフォーマット
-        各コマンド文字列 + 値, 各コマンド文字列 + 値,･･･
-        ex:VKO11,AM1123
-        */
-        txt += pc.VKO.getString();
+
         txt += txtVkon.getText().toString();
         txt += ",";
-        txt += pc.AM1.getString();
         txt += txtAmime1.getText().toString();
 
         return txt;
@@ -327,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case 8888:
-
                 Toast.makeText(this, "Setting has been completed.", Toast.LENGTH_SHORT).show();
                 break;
 

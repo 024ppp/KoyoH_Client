@@ -8,7 +8,7 @@ public enum ProcessCommand {
     COMMAND_LENGTH("COMMAND_LENGTH", 3),
     SAG("SAG", 1001),
     VKO("VKO", 1002),
-    AM1("AM1", 1003),
+    AMI("AMI", 1003),
     UPD("UPD", 1004),
     ERR("ERR", 9999)
     ;
