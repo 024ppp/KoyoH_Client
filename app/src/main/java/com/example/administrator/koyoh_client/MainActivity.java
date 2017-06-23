@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
@@ -23,11 +24,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     Button btnClear, btnUpd;
     TextView lblVkon, lblAmime1, show;
-    EditText txtSagyo, txtVkon, txtAmime1, txtHoge;
+    EditText txtSagyo, txtVkon, txtAmime1;
     Handler handler;
     // サーバと通信するスレッド
     ClientThread clientThread;
@@ -35,32 +36,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //インスタンス化無しで使える
     ProcessCommand pc;
 
-    String sSagyoName = "";
-    boolean focusFlg = false;
+    String mSagyoName = "";
 
     //入力チェック用配列
     EditText arrEditText[];
-    TextView arrTextView[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // view取得
+        //-- view取得 --
+        //toolbar
         toolbar = (Toolbar) findViewById(R.id.toolBar);
+        toolbar.setTitle("Ｃ棟ふるい網目セット管理");
         setSupportActionBar(toolbar);
-
-        show = (TextView) findViewById(R.id.show);
+        //Button
         btnClear = (Button) findViewById(R.id.btnClear);
-
+        btnUpd = (Button) findViewById(R.id.btnUpd);
+        //TextView
+        show = (TextView) findViewById(R.id.show);
         lblVkon = (TextView) findViewById(R.id.lblVkon);
         lblAmime1 = (TextView) findViewById(R.id.lblAmime1);
+        //EditText
         txtSagyo = (EditText) findViewById((R.id.txtSagyo));
         txtVkon = (EditText) findViewById(R.id.txtVkon);
         txtAmime1 = (EditText) findViewById(R.id.txtAmime1);
-        txtHoge = (EditText) findViewById(R.id.txtHoge);
-        btnUpd = (Button) findViewById(R.id.btnUpd);
 
         handler = new Handler()
         {
@@ -87,32 +88,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.nfcWriter = new NfcWriter(this);
 
         btnClear.setOnClickListener(this);
-        txtSagyo.setOnFocusChangeListener(this);
-        txtVkon.setOnFocusChangeListener(this);
-        txtAmime1.setOnFocusChangeListener(this); //???
         btnUpd.setOnClickListener(this);
 
-        //タップされてもキーボードを出さなくする
-        txtSagyo.setKeyListener(null);
-        txtVkon.setKeyListener(null);
-        txtAmime1.setKeyListener(null);
+        txtSagyo.setClickable(true);
+        txtSagyo.setOnClickListener(this);
 
         //入力チェック用配列にセット
         arrEditText = new EditText[]{txtSagyo, txtVkon, txtAmime1};
-        arrTextView = new TextView[]{null     , lblVkon, lblAmime1};
 
         //画面初期設定
         initPage();
-        focusFlg = true;
     }
 
-    //受信した文字列のコマンド値によって分岐（switch文ではenum使えず...if文汚し）
+    //受信した文字列のコマンド値によって分岐（switch文ではenum使えず...）
     private void selectMotionWhenReceiving(String sMsg) {
         String cmd = pc.COMMAND_LENGTH.getCmdText(sMsg);
         String excmd  = pc.COMMAND_LENGTH.getExcludeCmdText(sMsg);
 
         if (cmd.equals(pc.SAG.getString())) {
-            sSagyoName = excmd;
+            mSagyoName = excmd;
             showSelectSagyo();
         }
         else if (cmd.equals(pc.VKO.getString())) {
@@ -125,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             initPage();
         }
         else if (cmd.equals(pc.ERR.getString())) {
-            show.setText("\n "+ excmd);
+            show.setText(excmd);
         }
 
     }
@@ -145,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (txtAmime1.isFocused()) {
                 txtAmime1.setText(excmd);
                 focusToNextControl();
-                show.setText("\n 全てＯＫです。\n 登録してください。");
+                show.setText("全てＯＫです。\n登録してください。");
+                btnUpd.setEnabled(true);
             }
         }
     }
@@ -164,14 +159,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initPage() {
         for (int i = 0; i < arrEditText.length; i++) {
             arrEditText[i].setText("");
-            if (!arrEditText[i].equals(txtSagyo)) {
-                arrEditText[i].setFocusableInTouchMode(false);
-                arrEditText[i].setFocusable(false);
-            }
+
+            arrEditText[i].setFocusableInTouchMode(false);
+            arrEditText[i].setFocusable(false);
+
+            //タップされてもキーボードを出さなくする
+            arrEditText[i].setRawInputType(InputType.TYPE_CLASS_TEXT);
+            arrEditText[i].setTextIsSelectable(true);
         }
-        if (focusFlg) {
-            txtSagyo.requestFocus();
-        }
+        //登録ボタンを無効化
+        btnUpd.setEnabled(false);
+
+        //作業者選択画面呼び出し
+        showSelectSagyo();
+
     }
 
     @Override
@@ -180,9 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v != null) {
             switch (v.getId()) {
                 case R.id.btnUpd :
-                    if (!inputCheck()) {
-                        break;
-                    }
                     //Dialog(OK,Cancel Ver.)
                     new AlertDialog.Builder(this)
                             .setTitle("確認")
@@ -201,38 +199,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
 
                 case R.id.btnClear :
-                    initPage();;
+                    initPage();
+                    break;
+
+                case R.id.txtSagyo:
+                    showSelectSagyo();
                     break;
             }
         }
     }
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (v != null) {
-            switch (v.getId()) {
-                case R.id.txtSagyo :
-                    if (hasFocus) {
-                        showSelectSagyo();
-                    }
-                    break;
-
-                case R.id.txtVkon :
-                    if (hasFocus) {
-                        show.setText("\n " + lblVkon.getText().toString() + "を\n "
-                                        + "スキャンしてください。");
-                    }
-                    break;
-
-                case R.id.txtAmime1 :
-                    if (hasFocus) {
-                        show.setText("\n " + lblAmime1.getText().toString() + "を\n "
-                                + "スキャンしてください。");
-                    }
-                    break;
-            }
-        }
-    }
-
 
     @Override
     //タグを読み込んだ時に実行される
@@ -257,39 +232,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //入力チェック
-    private boolean inputCheck(){
-        for (int i = 0; i < arrEditText.length; i++) {
-            if (TextUtils.isEmpty(arrEditText[i].getText().toString())) {
-                show.setText("\n " + arrTextView[i].getText().toString()
-                        +"が未入力です。\n スキャンしてください。");
-                arrEditText[i].requestFocus();
-                return false;
-            }
+    private void setShowMessage(int order) {
+        switch (order) {
+            case 1:
+                show.setText("Vコンを\nスキャンしてください。");
+                break;
+            case 2:
+                show.setText("網を\nスキャンしてください。");
+                break;
+            case 3:
+                show.setText("をスキャンしてください。");
+                break;
         }
-        return true;
     }
 
     //次のコントロールにフォーカスを当てる
     private void focusToNextControl(){
         for (int i = 0; i < arrEditText.length; i++) {
             if (TextUtils.isEmpty(arrEditText[i].getText().toString())) {
-                //一旦退避用コントロールにフォーカスを移しておく
-                txtHoge.requestFocus();
+                arrEditText[i - 1].setFocusableInTouchMode(false);
+                arrEditText[i - 1].setFocusable(false);
 
-                if (!arrEditText[i - 1].equals(txtSagyo)) {
-                    arrEditText[i - 1].setFocusableInTouchMode(false);
-                    arrEditText[i - 1].setFocusable(false);
-                }
                 arrEditText[i].setFocusableInTouchMode(true);
                 arrEditText[i].setFocusable(true);
                 arrEditText[i].requestFocus();
+                setShowMessage(i);
                 return;
             }
         }
         //最終まで値のセットが終わっている場合
         int max = arrEditText.length - 1;
-        txtHoge.requestFocus();
         arrEditText[max].setFocusableInTouchMode(false);
         arrEditText[max].setFocusable(false);
     }
@@ -374,12 +346,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //作業者選択画面呼び出し
     private void showSelectSagyo() {
-        if (sSagyoName.equals("")) {
-            show.setText("\n 作業者名取得エラー。");
+        if (mSagyoName.equals("")) {
+            show.setText("作業者名取得エラー。");
             return;
         }
         Intent intent = new Intent(this, SelectSagyo.class);
-        intent.putExtra("name", sSagyoName);
+        intent.putExtra("name", mSagyoName);
         int requestCode = pc.SAG.getInt();
         startActivityForResult(intent, requestCode);
     }

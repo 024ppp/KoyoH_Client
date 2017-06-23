@@ -109,7 +109,7 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
             android:layout_height="134dp"
             android:layout_weight="0.25"
             android:background="#ffff"
-            android:gravity="top"
+            android:gravity="center_vertical"
             android:textColor="#FF0000"
             android:textSize="30sp" />
 
@@ -134,11 +134,6 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
                 android:textSize="30sp"
                 android:text="登録" />
         </LinearLayout>
-        <EditText
-            android:id="@+id/txtHoge"
-            android:enabled="false"
-            android:layout_width="match_parent"
-            android:layout_height="12dp" />
 
     </LinearLayout>
 
