@@ -160,12 +160,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < arrEditText.length; i++) {
             arrEditText[i].setText("");
 
-            arrEditText[i].setFocusableInTouchMode(false);
-            arrEditText[i].setFocusable(false);
-
-            //タップされてもキーボードを出さなくする
+            //!!! 注意 : (1),(2)の順番は変更しない。フォーカスが当たるようになってしまう。
+            //(1)タップされてもキーボードを出さなくする
             arrEditText[i].setRawInputType(InputType.TYPE_CLASS_TEXT);
             arrEditText[i].setTextIsSelectable(true);
+            //(2)フォーカスが当たらなくする
+            arrEditText[i].setFocusableInTouchMode(false);
+            arrEditText[i].setFocusable(false);
         }
         //登録ボタンを無効化
         btnUpd.setEnabled(false);
