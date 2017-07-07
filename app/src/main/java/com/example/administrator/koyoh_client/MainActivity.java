@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -27,7 +28,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     Button btnClear, btnUpd;
-    TextView lblVkon, lblAmime1, show;
+    TextView show;
     EditText txtSagyo, txtVkon, txtAmime1;
     Handler handler;
     // サーバと通信するスレッド
@@ -35,16 +36,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     NfcWriter nfcWriter = null;
     //インスタンス化無しで使える
     ProcessCommand pc;
-
-    String mSagyoName = "";
-
     //入力チェック用配列
     EditText arrEditText[];
+    //バイブ
+    Vibrator vib;
+    private long m_vibPattern_read[] = {0, 200};
+    private long m_vibPattern_error[] = {0, 200, 200, 500};
+
+    String mSagyoName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //バイブ
+        vib = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
         //-- view取得 --
         //toolbar
@@ -56,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnUpd = (Button) findViewById(R.id.btnUpd);
         //TextView
         show = (TextView) findViewById(R.id.show);
-        lblVkon = (TextView) findViewById(R.id.lblVkon);
-        lblAmime1 = (TextView) findViewById(R.id.lblAmime1);
         //EditText
         txtSagyo = (EditText) findViewById((R.id.txtSagyo));
         txtVkon = (EditText) findViewById(R.id.txtVkon);
@@ -119,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             initPage();
         }
         else if (cmd.equals(pc.ERR.getString())) {
+            //バイブ
+            //vib.vibrate(m_vibPattern_error, -1);
             show.setText(excmd);
         }
 
@@ -142,6 +148,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 show.setText("全てＯＫです。\n登録してください。");
                 btnUpd.setEnabled(true);
             }
+        }
+        else {
+            show.setText("タグテキストエラー！");
         }
     }
 
@@ -216,8 +225,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onNewIntent(intent);
         String tagText = "";
         tagText = this.nfcWriter.getTagText(intent);
-
-        selectMotionTagText(tagText);
+        if (!tagText.equals("")) {
+            selectMotionTagText(tagText);
+        }
+        //バイブ
+        //vib.vibrate(m_vibPattern_read, -1);
     }
 
     //サーバへメッセージを送信する
