@@ -26,12 +26,25 @@ public class ClientThread implements Runnable {
     OutputStream os = null;
     String ip;
     int myPort;
+    boolean isStartup;
+    BufferedWriter bw;
 
     //コンストラクタ
-    public ClientThread(Handler handler, String ip, int myPort) {
+    public ClientThread(Handler handler, String ip, int myPort, boolean isStartup) {
         this.handler = handler;
         this.ip = ip;
         this.myPort = myPort;
+        this.isStartup = isStartup;
+    }
+
+    //ファイナライザ
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            super.finalize();
+        } finally {
+            bw.close();
+        }
     }
 
     public void run() {
@@ -42,9 +55,14 @@ public class ClientThread implements Runnable {
             os = s.getOutputStream();
 
             OutputStream out = s.getOutputStream();
-            BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(out, "UTF-8")  );
+            bw = new BufferedWriter( new OutputStreamWriter(out, "UTF-8")  );
             //接続成功時
-            bw.write(ProcessCommand.SAG.getString() + "\n");    //作業者検索コマンドを投げる
+            if (isStartup) {
+                bw.write(ProcessCommand.SAG.getString() + "\n");    //作業者検索コマンドを投げる
+            }
+            else {
+                bw.write(ProcessCommand.REC.getString() + "\n");    //再接続コマンドを投げる
+            }
             //データを確定させて通信処理を起こさせる
             bw.flush();
 

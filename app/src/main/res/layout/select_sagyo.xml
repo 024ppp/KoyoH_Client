@@ -16,8 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:gravity="center_vertical|center_horizontal"
-            android:background="@drawable/frame_textview"
+            android:background="@drawable/frame_sagyo"
             android:textSize="30sp"
+            android:textColor="@color/white"
             android:text="作業者選択" />
 
         <ListView android:id="@+id/listView1"

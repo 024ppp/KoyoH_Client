@@ -13,6 +13,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="blockBorder">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/gray</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:layout_marginBottom">35dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
+
     <style name="ToolbarTheme" parent="Theme.AppCompat.NoActionBar">
         <!--タイトルテキストの色-->
         <item name="android:textColorPrimary">@color/white</item>
@@ -22,7 +32,7 @@
 
     <style name="ToolbarTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <!--テキスト関係を変えられる。これはただの例。-->
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

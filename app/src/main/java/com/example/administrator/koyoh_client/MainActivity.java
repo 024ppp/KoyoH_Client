@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,14 +32,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView show;
     EditText txtSagyo, txtVkon, txtAmime1;
     Handler handler;
+    String ip;
+    int myPort;
     // サーバと通信するスレッド
     ClientThread clientThread;
     NfcWriter nfcWriter = null;
     //インスタンス化無しで使える
     ProcessCommand pc;
+    private static final int SETTING = 8888;
     //入力チェック用配列
     EditText arrEditText[];
     //バイブ
+    //CAT40の場合は、バイブを鳴らすとエラーになるため注意！
     Vibrator vib;
     private long m_vibPattern_read[] = {0, 200};
     private long m_vibPattern_error[] = {0, 200, 200, 500};
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //toolbar
         toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle("Ｃ棟ふるい網目セット管理");
+
         setSupportActionBar(toolbar);
         //Button
         btnClear = (Button) findViewById(R.id.btnClear);
@@ -83,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //接続先を取得
         SharedPreferences prefs = getSharedPreferences("ConnectionData", Context.MODE_PRIVATE);
-        final String ip = prefs.getString("ip", "");
-        final int myPort = prefs.getInt("myPort", 0);
-        clientThread = new ClientThread(handler, ip, myPort);
+        ip = prefs.getString("ip", "");
+        myPort = prefs.getInt("myPort", 0);
+        clientThread = new ClientThread(handler, ip, myPort, true);
         // サーバ接続スレッド開始
         new Thread(clientThread).start();
 
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (cmd.equals(pc.ERR.getString())) {
             //バイブ
-            //vib.vibrate(m_vibPattern_error, -1);
+            vib.vibrate(m_vibPattern_error, -1);
             show.setText(excmd);
         }
 
@@ -209,7 +215,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
 
                 case R.id.btnClear :
-                    initPage();
+                    //Dialog(OK,Cancel Ver.)
+                    new AlertDialog.Builder(this)
+                            .setTitle("確認")
+                            .setMessage("クリアしてよろしいですか？")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // OK button pressed
+                                    initPage();
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
                     break;
 
                 case R.id.txtSagyo:
@@ -229,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selectMotionTagText(tagText);
         }
         //バイブ
-        //vib.vibrate(m_vibPattern_read, -1);
+        vib.vibrate(m_vibPattern_read, -1);
     }
 
     //サーバへメッセージを送信する
@@ -313,6 +331,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            //Dialog(OK,Cancel Ver.)
+            new AlertDialog.Builder(this)
+                    .setTitle("確認")
+                    .setMessage("終了してもよろしいですか？")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // OK button pressed
+                            finishAndRemoveTask();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         PendingIntent pendingIntent = this.createPendingIntent();
@@ -350,9 +388,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.action_settings) {
             //設定画面呼び出し
             Intent intent = new Intent(this, Setting.class);
-            int requestCode = 8888;
+            int requestCode = SETTING;
             startActivityForResult(intent, requestCode);
             return true;
+        }
+        else if (id == R.id.action_reconnection) {
+            show.setText("再接続に失敗しました。\n無線LAN状況を確認してください。");
+            //再接続を行う
+            clientThread = new ClientThread(handler, ip, myPort, false);
+            // サーバ接続スレッド開始
+            new Thread(clientThread).start();
+        }
+        else if (id == R.id.action_finish) {
+            //Dialog(OK,Cancel Ver.)
+            new AlertDialog.Builder(this)
+                    .setTitle("確認")
+                    .setMessage("終了してもよろしいですか？")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // OK button pressed
+                            finishAndRemoveTask();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }

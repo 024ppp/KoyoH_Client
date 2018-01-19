@@ -10,6 +10,7 @@ public enum ProcessCommand {
     VKO("VKO", 1002),
     AMI("AMI", 1003),
     UPD("UPD", 1004),
+    REC("REC", 7777),
     ERR("ERR", 9999)
     ;
 
