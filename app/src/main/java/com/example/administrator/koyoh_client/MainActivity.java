@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //入力チェック用配列
     EditText arrEditText[];
     //バイブ
-    //CAT40の場合は、バイブを鳴らすとエラーになるため注意！
+    //CAT40の場合は、バイブを鳴らすとエラーになるため注意!!
     Vibrator vib;
     private long m_vibPattern_read[] = {0, 200};
     private long m_vibPattern_error[] = {0, 200, 200, 500};
