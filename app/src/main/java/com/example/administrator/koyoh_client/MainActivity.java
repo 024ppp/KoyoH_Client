@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (cmd.equals(pc.ERR.getString())) {
             //バイブ
-            vib.vibrate(m_vibPattern_error, -1);
+            //vib.vibrate(m_vibPattern_error, -1);
             show.setText(excmd);
         }
 
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else {
-            show.setText("タグテキストエラー！");
+            show.setText("タグテキストエラー！\n（" + sMsg + "）");
         }
     }
 
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selectMotionTagText(tagText);
         }
         //バイブ
-        vib.vibrate(m_vibPattern_read, -1);
+        //vib.vibrate(m_vibPattern_read, -1);
     }
 
     //サーバへメッセージを送信する
@@ -266,13 +266,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setShowMessage(int order) {
         switch (order) {
             case 1:
-                show.setText("Vコンを\nスキャンしてください。");
+                show.setText("Vコンを\nタッチしてください。");
                 break;
             case 2:
-                show.setText("網を\nスキャンしてください。");
+                show.setText("網を\nタッチしてください。");
                 break;
             case 3:
-                show.setText("をスキャンしてください。");
+                show.setText("をタッチしてください。");
                 break;
         }
     }

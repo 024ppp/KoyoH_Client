@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KoyoH_Client</string>
+    <string name="app_name">Ｃ棟ふるい網目セット管理</string>
     <string name="action_settings">設定</string>
     <string name="action_reconnection">再接続</string>
     <string name="action_finish">終了</string>
