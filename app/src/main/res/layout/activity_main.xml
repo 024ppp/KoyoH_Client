@@ -28,25 +28,25 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/lblSagyo"
                 android:layout_width="125dp"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/dp_height"
                 android:gravity="center_vertical|center_horizontal"
                 android:background="@drawable/frame_textview"
-                android:textSize="30sp"
+                android:textSize="@dimen/sp_m"
                 android:layout_marginRight="5dp"
                 android:text="作業者" />
 
             <EditText
                 android:id="@+id/txtSagyo"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="30sp"
+                android:layout_height="@dimen/dp_height"
+                android:textSize="@dimen/sp_m"
                 android:background="@drawable/frame_edittext" />
         </LinearLayout>
 
@@ -60,18 +60,18 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
             <TextView
                 android:id="@+id/lblVkon"
                 android:layout_width="125dp"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/dp_height"
                 android:gravity="center_vertical|center_horizontal"
                 android:background="@drawable/frame_textview"
-                android:textSize="30sp"
+                android:textSize="@dimen/sp_m"
                 android:layout_marginRight="5dp"
                 android:text="Vコン" />
 
             <EditText
                 android:id="@+id/txtVkon"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="30sp"
+                android:layout_height="@dimen/dp_height"
+                android:textSize="@dimen/sp_m"
                 android:background="@drawable/frame_edittext" />
 
         </LinearLayout>
@@ -87,18 +87,18 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
             <TextView
                 android:id="@+id/lblAmime1"
                 android:layout_width="125dp"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/dp_height"
                 android:gravity="center_vertical|center_horizontal"
                 android:background="@drawable/frame_textview"
-                android:textSize="30sp"
+                android:textSize="@dimen/sp_m"
                 android:layout_marginRight="5dp"
                 android:text="網" />
 
             <EditText
                 android:id="@+id/txtAmime1"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="30sp"
+                android:layout_height="@dimen/dp_height"
+                android:textSize="@dimen/sp_m"
                 android:background="@drawable/frame_edittext" />
 
         </LinearLayout>
@@ -113,7 +113,7 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
             android:background="#ffff"
             android:gravity="center_vertical"
             android:textColor="#FF0000"
-            android:textSize="25sp" />
+            android:textSize="@dimen/sp_l" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -123,17 +123,17 @@ tools:context="com.example.administrator.koyoh_client.MainActivity">
             <Button
                 android:id="@+id/btnClear"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
-                android:textSize="30sp"
+                android:textSize="@dimen/sp_l"
                 android:text="クリア" />
 
             <Button
                 android:id="@+id/btnUpd"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
-                android:textSize="30sp"
+                android:textSize="@dimen/sp_l"
                 android:text="登録" />
         </LinearLayout>
 

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //CAT40の場合は、バイブを鳴らすとエラーになるため注意!!
     Vibrator vib;
     private long m_vibPattern_read[] = {0, 200};
-    private long m_vibPattern_error[] = {0, 200, 200, 500};
+    private long m_vibPattern_error[] = {0, 500, 200, 500};
 
     String mSagyoName = "";
 
@@ -125,12 +125,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             focusToNextControl();
         }
         else if (cmd.equals(pc.UPD.getString())) {
-            MyToast.makeText(this, "登録完了しました。", Toast.LENGTH_SHORT, 32f).show();
-            initPage();
+            //MyToast.makeText(this, "登録完了しました。", Toast.LENGTH_SHORT, 32f).show();
+            //initPage();
+            //登録完了後はダイアログを表示し、アプリを終了させる
+            show.setText("");
+            new AlertDialog.Builder(this)
+                    .setTitle("確認")
+                    .setMessage("登録完了しました。")
+                    .setPositiveButton("終了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // OK button pressed
+                            finishAndRemoveTask();
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
         }
         else if (cmd.equals(pc.ERR.getString())) {
             //バイブ
-            //vib.vibrate(m_vibPattern_error, -1);
+            vib.vibrate(m_vibPattern_error, -1);
             show.setText(excmd);
         }
 
@@ -247,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selectMotionTagText(tagText);
         }
         //バイブ
-        //vib.vibrate(m_vibPattern_read, -1);
+        vib.vibrate(m_vibPattern_read, -1);
     }
 
     //サーバへメッセージを送信する

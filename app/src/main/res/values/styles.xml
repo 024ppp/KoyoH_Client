@@ -32,7 +32,7 @@
 
     <style name="ToolbarTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <!--テキスト関係を変えられる。これはただの例。-->
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">23sp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
