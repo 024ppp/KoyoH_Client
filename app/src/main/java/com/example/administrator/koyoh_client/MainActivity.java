@@ -1,30 +1,28 @@
 package com.example.administrator.koyoh_client;
 
-import android.app.ActionBar;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Button;
-import android.os.Handler;
 import android.widget.EditText;
-import android.os.Message;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
@@ -211,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v != null) {
             switch (v.getId()) {
                 case R.id.btnUpd :
+                    /* 20180719 登録ダイアログなし
                     //Dialog(OK,Cancel Ver.)
                     new AlertDialog.Builder(this)
                             .setTitle("確認")
@@ -226,6 +225,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             })
                             .setNegativeButton("Cancel", null)
                             .show();
+                    */
+                    //更新値の生成
+                    String updText = createUpdText();
+                    sendMsgToServer(pc.UPD.getString() + updText);
                     break;
 
                 case R.id.btnClear :
